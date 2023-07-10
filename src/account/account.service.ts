@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ethers } from 'ethers';
 import { Repository } from 'typeorm';
@@ -18,5 +18,17 @@ export class AccountService {
     // TODO: Create a new account using ethers module
 
     return this.accountRepository.save(account);
+  }
+
+  async findOne(id: number) {
+    const user = await this.accountRepository.findOne({where: {id}});
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
+  }
+
+  async findAll() {
+    return this.accountRepository.find();
   }
 }

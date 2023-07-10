@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ethers } from 'ethers';
 import { Repository } from 'typeorm';
@@ -18,5 +18,17 @@ export class PaymentService {
     // TODO: Create a new payment using ethers module
     
     return await this.paymentsRepository.save(payment);
+  }
+
+  async findOne(id: number) {
+    const user = await this.paymentsRepository.findOne({where: {id}});
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
+  }
+
+  async findAll() {
+    return this.paymentsRepository.find();
   }
 }
